@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Dashboard - 3 Tabs</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #f8f9fa;
+      color: #202124;
+      line-height: 1.6;
+    }
+
+    .top-bar {
+      background: #fff;
+      border-bottom: 1px solid #e8eaed;
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 2px 0 rgba(60,64,67,0.1);
+    }
+
+    .top-bar-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 500;
+      color: #202124;
+    }
+
+    .env-tabs {
+      display: flex;
+      gap: 4px;
+      background: #f1f3f4;
+      padding: 4px;
+      border-radius: 8px;
+      align-items: center;
+    }
+
+    .env-tabs label {
+      font-size: 14px;
+      color: #5f6368;
+      margin-right: 8px;
+    }
+
+    .env-tabs select {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: #5f6368;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid #e8eaed;
+    }
+
+    .tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      color: #5f6368;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      color: #1967d2;
+      background: #f8f9fa;
+    }
+
+    .tab.active {
+      color: #1967d2;
+      border-bottom-color: #1967d2;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid #e8eaed;
+      box-shadow: 0 1px 3px rgba(60,64,67,0.1);
+    }
+
+    .section-header {
+      font-size: 16px;
+      font-weight: 500;
+      color: #202124;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e8eaed;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #dadce0;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #202124;
+      background: #fff;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: #1967d2;
+      box-shadow: 0 0 0 4px rgba(25, 103, 210, 0.1);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: #1967d2;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1557b0;
+      box-shadow: 0 1px 3px rgba(60,64,67,0.3);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #1967d2;
+      border: 1px solid #dadce0;
+    }
+
+    .btn-secondary:hover {
+      background: #f8f9fa;
+    }
+
+    .btn-danger {
+      background: #d93025;
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #c5221f;
+    }
+
+    .btn-text {
+      background: transparent;
+      color: #1967d2;
+      padding: 8px 16px;
+    }
+
+    .btn-text:hover {
+      background: rgba(25, 103, 210, 0.08);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .preset-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      background: #fff;
+      border: 1.5px solid #dadce0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-item:hover {
+      border-color: #1967d2;
+      background: #f8f9fa;
+    }
+
+    .preset-checkbox {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #5f6368;
+      border-radius: 4px;
+      margin-right: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .preset-checkbox:checked {
+      background: #1967d2;
+      border-color: #1967d2;
+    }
+
+    .preset-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .preset-item:has(.preset-checkbox:checked) {
+      background: #e8f0fe;
+      border-color: #1967d2;
+    }
+
+    .preset-content {
+      flex: 1;
+    }
+
+    .preset-text {
+      font-size: 14px;
+      color: #202124;
+      font-weight: 500;
+    }
+
+    .preset-id {
+      font-size: 12px;
+      color: #5f6368;
+      font-family: 'Roboto Mono', monospace;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #5f6368;
+      text-transform: uppercase;
+      background: #f8f9fa;
+      border-radius: 8px 0 0 8px;
+    }
+
+    tbody tr {
+      background: #fff;
+      transition: all 0.2s;
+    }
+
+    tbody tr:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(60,64,67,0.1);
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      border-top: 1px solid #e8eaed;
+      border-bottom: 1px solid #e8eaed;
+    }
+
+    tbody tr td:first-child {
+      border-left: 1px solid #e8eaed;
+      border-radius: 8px 0 0 8px;
+    }
+
+    tbody tr td:last-child {
+      border-right: 1px solid #e8eaed;
+      border-radius: 0 8px 8px 0;
+    }
+
+    tbody td input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .result-box {
+      background: #202124;
+      color: #e8eaed;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .result-box::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .result-box::-webkit-scrollbar-thumb {
+      background: #5f6368;
+      border-radius: 4px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #e8eaed;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 500;
+      color: #202124;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #5f6368;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-success {
+      background: #e6f4ea;
+      color: #1e8e3e;
+    }
+
+    .status-error {
+      background: #fce8e6;
+      color: #c5221f;
+    }
+
+    .status-warning {
+      background: #fef7e0;
+      color: #f9ab00;
+    }
+
+    .dashboard-list {
+      font-size: 12px;
+      color: #5f6368;
+    }
+
+    .dashboard-item.present {
+      color: #1e8e3e;
+    }
+
+    .dashboard-item.missing {
+      color: #c5221f;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e8eaed;
+      margin: 24px 0;
+    }
+
+    .stat-card {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(60,64,67,0.15);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 600px;
+      max-height: 70vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 24px rgba(60,64,67,0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e8eaed;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #202124;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #5f6368;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .modal-close:hover {
+      background: #f1f3f4;
+    }
+
+    .email-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .email-list li {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f3f4;
+      font-size: 14px;
+      color: #202124;
+    }
+
+    .email-list li:last-child {
+      border-bottom: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-bar">
+    <div class="top-bar-content">
+      <div class="logo"> Quản Lý Dashboard - 3 Tính Năng - Tạo/xóa - Kiểm Trả Dashboard - Đẩy dữ liệu Dashboard</div>
+      <div class="env-tabs">
+        <label>Môi trường:</label>
+        <select id="env" class="form-select">
+          <option value="dev">Development</option>
+          <option value="demo">Demo</option>
+          <option value="prod" selected>Production</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('create')"> Tạo/Xóa Dashboard</button>
+      <button class="tab" onclick="switchTab('check')"> Kiểm Tra Dashboard</button>
+      <button class="tab" onclick="switchTab('push')"> Đẩy Dữ Liệu</button>
+    </div>
+
+    <!-- Tab 1: Create/Delete -->
+    <div id="tab-create" class="tab-content active">
+      <!-- Auth -->
+      <div class="section">
+        <div class="section-header">Xác Thực</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tên đăng nhập</label>
+            <input type="text" id="username" class="form-input" placeholder="admin@fpt.com" value="customersuport@gmail.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" id="password" class="form-input" value="thads@2025">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">Đăng nhập</button>
+        <div class="divider"></div>
+        <div class="form-group">
+          <label class="form-label">Access Token</label>
+          <textarea id="token" class="form-textarea"></textarea>
+        </div>
+      </div>
+
+      <!-- Dashboards -->
+      <div class="section">
+        <div class="section-header">Chọn Dashboard</div>
+        <div class="preset-grid">
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006DzIyP8MIxDDXbLOV" checked>
+            <span class="preset-content">
+              <span class="preset-text">Trang chủ</span>
+              <span class="preset-id">00006DzIyP8MIxDDXbLOV</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="0000615IDXR0u6QQ0RKmy" checked>
+            <span class="preset-content">
+              <span class="preset-text">Văn bản cần ký</span>
+              <span class="preset-id">0000615IDXR0u6QQ0RKmy</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="0000663IdbMsv1Kzq68r" checked>
+            <span class="preset-content">
+              <span class="preset-text">Văn bản chờ phát hành</span>
+              <span class="preset-id">0000663IdbMsv1Kzq68r</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006DzIDGRFxDwE8OMn" checked>
+            <span class="preset-content">
+              <span class="preset-text">Văn bản bị trả lại</span>
+              <span class="preset-id">00006DzIDGRFxDwE8OMn</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006bBImoXiQr10xDM0" checked>
+            <span class="preset-content">
+              <span class="preset-text">Văn bản đã phát hành</span>
+              <span class="preset-id">00006bBImoXiQr10xDM0</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006BXIkLoigM4523Wq" checked>
+            <span class="preset-content">
+              <span class="preset-text">Tác nghiệp chưa hoàn thành</span>
+              <span class="preset-id">00006BXIkLoigM4523Wq</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006N1IK56uNoy40lnw" checked>
+            <span class="preset-content">
+              <span class="preset-text">Tác nghiệp đã hoàn thành</span>
+              <span class="preset-id">00006N1IK56uNoy40lnw</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006owIP6pAHollW1xKR" checked>
+            <span class="preset-content">
+              <span class="preset-text">Hồ sơ đang thi hành</span>
+              <span class="preset-id">00006owIP6pAHollW1xKR</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006lKI663u08na2OVa" checked>
+            <span class="preset-content">
+              <span class="preset-text">HDSD</span>
+              <span class="preset-id">00006lKI663u08na2OVa</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Email Import -->
+      <div class="section">
+        <div class="section-header">Nhập Email Hàng Loạt</div>
+        <div class="form-group">
+          <label class="form-label">Danh sách Email (mỗi dòng một email)</label>
+          <textarea id="emails" class="form-textarea"></textarea>
+        </div>
+        <button class="btn btn-secondary" onclick="getIds()">Lấy ID người dùng</button>
+      </div>
+
+      <!-- Users Table -->
+      <div class="section">
+        <div class="section-header">Danh Sách ID + Email</div>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>Hành Động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" placeholder="ID"></td>
+              <td><input type="text" placeholder="Email" onkeydown="handleEmailEnter(event, this)"></td>
+              <td><button class="btn btn-text" onclick="removeRow(this)">Xóa</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn btn-text" onclick="addRow()">+ Thêm dòng</button>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="callApi()">Tạo Dashboard</button>
+          <button class="btn btn-danger" onclick="deleteApi()">Xóa Dashboard</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="section">
+        <div class="section-header">Kết Quả</div>
+        <pre id="result" class="result-box">Sẵn sàng thực thi...</pre>
+      </div>
+    </div>
+
+    <!-- Tab 2: Check Dashboard -->
+    <div id="tab-check" class="tab-content">
+      <!-- Check Section -->
+      <div class="section">
+        <div class="section-header">Kiểm Tra Dashboard</div>
+        <div class="form-group">
+          <label class="form-label">Danh sách Email (mỗi dòng một email)</label>
+          <textarea id="checkEmails" class="form-textarea" placeholder="test_user1@moj.gov.vn
+test_user2@moj.gov.vn"></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="checkDashboards()"> Kiểm Tra</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="section" id="statsSection" style="display: none;">
+        <div class="section-header">Thống Kê</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="totalUsers">0</div>
+            <div class="stat-label">Tổng số người dùng</div>
+          </div>
+          <div class="stat-card" onclick="showModal('complete')">
+            <div class="stat-value" id="completeUsers">0</div>
+            <div class="stat-label">✓ Đầy đủ (9/9)</div>
+          </div>
+          <div class="stat-card" onclick="showModal('partial')">
+            <div class="stat-value" id="partialUsers">0</div>
+            <div class="stat-label">⚠ Thiếu</div>
+          </div>
+          <div class="stat-card" onclick="showModal('missing')">
+            <div class="stat-value" id="missingUsers">0</div>
+            <div class="stat-label">✗ Chưa có (0/9)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Check Results -->
+      <div class="section" id="checkResultsSection" style="display: none;">
+        <div class="section-header">Kết Quả Chi Tiết</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>User ID</th>
+              <th>Trạng thái</th>
+              <th>Dashboard</th>
+            </tr>
+          </thead>
+          <tbody id="checkResultsBody">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Check Log -->
+      <div class="section">
+        <div class="section-header">Log</div>
+        <pre id="checkLog" class="result-box">Sẵn sàng kiểm tra...</pre>
+      </div>
+    </div>
+
+    <!-- Tab 3: Push Data -->
+    <div id="tab-push" class="tab-content">
+      <!-- Config Section -->
+      <div class="section">
+        <div class="section-header">Cấu Hình API</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">API URL</label>
+            <input type="text" id="pushApiUrl" class="form-input" 
+              value="https://econtract.fpt.com/app/services/thads-tctha/api/enforcements/save-internal">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bearer Token</label>
+          <textarea id="pushToken" class="form-textarea" placeholder="Nhập Bearer Token từ Tab 1 hoặc paste token khác..."></textarea>
+        </div>
+        <button class="btn btn-secondary" onclick="copyTokenFromTab1()"> Copy Token từ Tab 1</button>
+      </div>
+
+      <!-- Email List -->
+      <div class="section">
+        <div class="section-header">Danh Sách Email</div>
+        <div class="form-group">
+          <label class="form-label">Email (mỗi dòng một email) - Sẽ gán vào trường "assignee"</label>
+          <textarea id="pushEmails" class="form-textarea" placeholder="customersuport@gmail.com
+test_user@example.com"></textarea>
+        </div>
+      </div>
+
+      <!-- Enforcement Data -->
+      <div class="section">
+        <div class="section-header">Dữ Liệu Hồ Sơ (JSON Array)</div>
+        <div class="form-group">
+          <label class="form-label">Dữ liệu đã được tích hợp sẵn (4 hồ sơ mẫu) - Có thể chỉnh sửa nếu cần</label>
+          <textarea id="pushData" class="form-textarea" style="min-height: 300px;"></textarea>
+        </div>
+        <button class="btn btn-secondary" onclick="loadSampleData()"> Tải lại dữ liệu mẫu</button>
+      </div>
+
+      <!-- Push Button -->
+      <div class="section">
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="startPushData()"> Bắt Đầu Đẩy Dữ Liệu</button>
+          <button class="btn btn-danger" onclick="stopPushData()"> Dừng Lại</button>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-grid" style="margin-top: 24px;">
+          <div class="stat-card">
+            <div class="stat-value" id="pushTotal">0</div>
+            <div class="stat-label">Tổng requests</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="pushSuccess">0</div>
+            <div class="stat-label">Thành công</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="pushFailed">0</div>
+            <div class="stat-label">Thất bại</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="pushProgress">0%</div>
+            <div class="stat-label">Tiến độ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Push Log -->
+      <div class="section">
+        <div class="section-header">Log Đẩy Dữ Liệu</div>
+        <pre id="pushLog" class="result-box">Sẵn sàng đẩy dữ liệu...</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for showing email lists -->
+  <div id="emailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Danh sách Email</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <ul class="email-list" id="modalEmailList"></ul>
+    </div>
+  </div>
+
+  <script>
+    const domainMap = {
+      dev: "http://10.14.121.10/eworkspace/services",
+      demo: "https://demo.workspace.kyta.fpt.com/services",
+      prod: "https://erequest.kyta.fpt.com/workspace/services"
+    };
+
+    const loginBaseMap = {
+      dev: "http://10.14.121.10/eaccount",
+      demo: "https://demo.eaccount.kyta.fpt.com",
+      prod: "https://eaccount.kyta.fpt.com"
+    };
+
+    const DASHBOARD_IDS = [
+      "00006DzIyP8MIxDDXbLOV",
+      "0000615IDXR0u6QQ0RKmy",
+      "0000663IdbMsv1Kzq68r",
+      "00006DzIDGRFxDwE8OMn",
+      "00006bBImoXiQr10xDM0",
+      "00006BXIkLoigM4523Wq",
+      "00006N1IK56uNoy40lnw",
+      "00006owIP6pAHollW1xKR",
+      "00006lKI663u08na2OVa"
+    ];
+
+    const dashboardNames = {
+      "00006DzIyP8MIxDDXbLOV": "Trang chủ",
+      "0000615IDXR0u6QQ0RKmy": "Văn bản cần ký",
+      "0000663IdbMsv1Kzq68r": "Văn bản chờ phát hành",
+      "00006DzIDGRFxDwE8OMn": "Văn bản bị trả lại",
+      "00006bBImoXiQr10xDM0": "Văn bản đã phát hành",
+      "00006BXIkLoigM4523Wq": "Tác nghiệp chưa hoàn thành",
+      "00006N1IK56uNoy40lnw": "Tác nghiệp đã hoàn thành",
+      "00006owIP6pAHollW1xKR": "Hồ sơ đang thi hành",
+      "00006lKI663u08na2OVa": "HDSD"
+    };
+
+    let pushStopFlag = false;
+
+    // Store check results globally for modal
+    let checkResultsData = {
+      complete: [],
+      partial: [],
+      missing: []
+    };
+
+    // Modal functions
+    function showModal(type) {
+      const modal = document.getElementById('emailModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalEmailList = document.getElementById('modalEmailList');
+      
+      let title = '';
+      let emails = [];
+      
+      if (type === 'complete') {
+        title = `✓ Đầy đủ (${checkResultsData.complete.length} users)`;
+        emails = checkResultsData.complete;
+      } else if (type === 'partial') {
+        title = `⚠ Thiếu (${checkResultsData.partial.length} users)`;
+        emails = checkResultsData.partial;
+      } else if (type === 'missing') {
+        title = `✗ Chưa có (${checkResultsData.missing.length} users)`;
+        emails = checkResultsData.missing;
+      }
+      
+      modalTitle.textContent = title;
+      modalEmailList.innerHTML = '';
+      
+      emails.forEach(email => {
+        const li = document.createElement('li');
+        li.textContent = email;
+        modalEmailList.appendChild(li);
+      });
+      
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('emailModal');
+      modal.classList.remove('active');
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('emailModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    const SAMPLE_ENFORCEMENT_DATA = [{"enforcement":{"attrs":{"sobanan":"436/QĐST-HNGĐ","qd1loai":"Hôn nhân và gia đình","ngaybanan":"2025-08-13T17:00:00Z","toaan":"Thi hành án dân sự thành phố Hồ Chí Minh"},"decisionId":"000061pyILrkyfEOVJv8WA","decisionNumber":"21101/QĐ-THADS","requestDate":"2025-11-25T09:48:41Z","type":"is_proactive","contentRequirements":{"base64":null,"html":"Án phí hôn nhân và gia đình sơ thẩm là 150.000 đồng (Một trăm năm mươi nghìn đồng) do bà Nhung tự nguyện chịu, được cấn trừ vào số tiền tạm ứng án phí 300.000 đồng (Ba trăm nghìn đồng) do bà Nhung đã nộp theo biên lai thu tiền số 0016254 ngày 09/10/2024 của Chi cục Thi hành án dân sự huyện Củ Chi, Thành phố Hồ Chí Minh (nay là Phòng Thi hành án dân sự Khu vực 8-Thành phố Hồ Chí Minh), hoàn số tiền còn lại 150.000 đồng (Một trăm năm mươi nghìn đồng) cho bà Nhung."},"propertyInfo":{"base64":null,"html":null},"requester":null,"requesterId":null,"requesterAddress":null,"enforcementAgency":"Thi hành án dân sự thành phố Hồ Chí Minh","status":"dangthihanh","period":"thongbaoquyetdinhtha","action":"RA_QUYET_DINH","assigneeName":"diempth.hcm@moj.gov.vn","assignee":"test_candv.hcm@moj.gov.vn","preAssignee":null,"ticketId":"00006lKIW9lwI0852Mo96","envelopeId":null,"judgmentInfo":{"base64":null,"html":"Căn cứ Quyết định công nhận thuận tình ly hôn và sự thỏa thuận của các đương sự số 436/2025/QĐST-HNGĐ ngày 14 tháng 8 năm 2025 của Tòa án nhân dân Khu vực 8 - Thành phố Hồ Chí Minh."},"obligorName":{"base64":null,"html":"bà Nguyễn Thị Cẩm Nhung, địa chỉ: Ấp 8, xã Phú Hòa Đông, Thành phố Hồ Chí Minh."},"lookup":null,"receivedDate":"2025-11-25T09:48:30Z","signedDate":"2025-11-26T02:41:04Z","totalMoney":300000,"totalReceived":0,"remainingAmount":300000},"enforcementDocumentRequests":[{"enforcementDocument":{"resourceType":"attatch","number":"21101/QĐ-THADS","name":"QĐ THADS 436/QĐST-HNGĐ Bà Nguyễn Thị Cẩm Nhung","releaseDate":"2025-11-26T02:41:04Z","submissionDate":"2025-11-25T09:48:30Z","page":null,"businessType":"attach","documentType":"qdtha","status":"approved","resourceSystem":"eQD","butLuc":"1","deletionFlag":false},"objectStorages":[{"resourceId":"judgment_decision_000061pyILrkyfEOVJv8WA","fileName":"QĐ THADS 436/QĐST-HNGĐ Bà Nguyễn Thị Cẩm Nhung","typeLocation":null,"code":null,"beanName":"s3ClientSecond","bucketName":"prod-2025-envelope-second","keyName":"11/completed//storage-01/5682/0000615O6Ik8dIJpJ6560afNaN8.pdf","documentType":"envelope","resourceType":"DOCUMENT_TYPE_QDTHA","contentType":"application/pdf","documentSize":1744928,"resourceSystem":"envelope","description":null,"envelopeId":"000069Q3FQk0HnGnNPX0xCVyVk"}]}],"enforcementParties":[{"name":"Nguyễn Thị Cẩm Nhung","type":"P","attrs":{"dob":null,"ma_xa":null,"ma_tinh":null,"quoc_tich":null,"represent":null,"chuc_danh_dai_dien":null},"email":null,"gender":null,"birthDay":null,"subjects":"ncqlnv","description":null,"phoneNumber":null,"deletionFlag":false,"identification":null,"permanentAddress":"Ấp 8, xã Phú Hòa Đông, Thành phố Hồ Chí Minh.","temporaryAddress":"Ấp 8, xã Phú Hòa Đông, Thành phố Hồ Chí Minh."}],"businessOperationDetails":[{"note":null,"paid":0,"rest":150000,"type":"an_phi","attrs":{"currency":"VND"},"issue":null,"money":150000,"exempt":null,"period":"thongbaoquyetdinhtha","reason":null,"reduce":null,"status":"dangthihanh","addition":null,"assetType":null,"description":"Án phí hôn nhân và gia đình sơ thẩm","obligorName":{"html":"Nguyễn Thị Cẩm Nhung","base64":null},"postponedTo":null,"businessType":"financial","personalInfos":null,"postponedFrom":null,"processingType":null}]},{"enforcement":{"attrs":{"sobanan":"109/2025/QĐST-HNGĐ","qd1loai":"Hôn nhân và gia đình","ngaybanan":"2025-09-21T17:00:00Z","toaan":"Thi hành án dân sự tỉnh Đồng Nai"},"decisionId":"000061BXIg2ngtgMaB5mKx","decisionNumber":"7462/QĐ-THADS","requestDate":"2025-12-11T11:02:04Z","type":"is_proactive","contentRequirements":{"base64":null,"html":"Hoàn trả cho ông Tạ Hùng số tiền 300.000 đồng (Ba trăm ngàn đồng) tạm ứng án phí đã nộp theo biên lai thu số 0007410 ngày 12/6/2025 của Chi cục Thi hành án dân sự thành phố Biên Hòa, tỉnh Đồng Nai (nay là Phòng thi hành án dân sự Khu vực 1 - Đồng Nai)."},"propertyInfo":{"base64":null,"html":null},"requester":null,"requesterId":null,"requesterAddress":null,"enforcementAgency":"Thi hành án dân sự tỉnh Đồng Nai","status":"dangthihanh","period":"thongbaoquyetdinhtha","action":"RA_QUYET_DINH","assigneeName":"duongpb.dni@moj.gov.vn","assignee":"test_candv.hcm@moj.gov.vn","preAssignee":null,"ticketId":"00006pyIok6BfEOwmBxAd","envelopeId":null,"judgmentInfo":{"base64":null,"html":"Căn cứ Quyết định số 143/2025/QĐST-HNGĐ ngày 22 tháng 9 năm 2025 của Toà án nhân dân Khu vực 1 – Đồng Nai; Căn cứ Quyết định sửa chữa, bổ sung số 110/2025/QĐ-SCBSQĐ ngày 27 tháng 10 năm 2025 của Toà án nhân dân Khu vực 1 – Đồng Nai;"},"obligorName":{"base64":null,"html":"Ông Tạ Hùng, sinh năm 1982; Địa chỉ: 170, tổ 25, khu phố 5, phường Long Bình, thành phố Biên Hoà, tỉnh Đồng Nai (nay là khu phố 31, phường Long Bình, tỉnh Đồng Nai)."},"lookup":null,"receivedDate":"2025-12-05T01:44:44Z","signedDate":"2025-12-09T07:35:46Z","totalMoney":300000,"totalReceived":0,"remainingAmount":300000},"enforcementDocumentRequests":[{"enforcementDocument":{"resourceType":"attatch","number":"7462/QĐ-THADS","name":"QĐ THADS 109/2025/QĐST-HNGĐ Ông Tạ Hùng","releaseDate":"2025-12-09T07:35:46Z","submissionDate":"2025-12-05T01:44:44Z","page":null,"businessType":"attach","documentType":"qdtha","status":"approved","resourceSystem":"eQD","butLuc":"1","deletionFlag":false},"objectStorages":[{"resourceId":"judgment_decision_000061BXIg2ngtgMaB5mKx","fileName":"QĐ THADS 109/2025/QĐST-HNGĐ Ông Tạ Hùng","typeLocation":null,"code":null,"beanName":"s3ClientSecond","bucketName":"prod-2025-envelope-second","keyName":"12/completed//storage-01/5682/000062b0f2qDTQrKM6bD5iVp4a.pdf","documentType":"envelope","resourceType":"DOCUMENT_TYPE_QDTHA","contentType":"application/pdf","documentSize":1765744,"resourceSystem":"envelope","description":null,"envelopeId":"000069bKFA4KiQrKM6bv3hVp4a"}]}],"enforcementParties":[{"name":"Tạ Hùng","type":"P","attrs":{"dob":null,"ma_xa":null,"ma_tinh":null,"quoc_tich":null,"represent":null,"chuc_danh_dai_dien":null},"email":null,"gender":null,"birthDay":"1982","subjects":"ndtha","description":null,"phoneNumber":null,"deletionFlag":false,"identification":null,"permanentAddress":"170, tổ 25, khu phố 5, phường Long Bình, thành phố Biên Hoà, tỉnh Đồng Nai (nay là khu phố 31, phường Long Bình, tỉnh Đồng Nai).","temporaryAddress":"170, tổ 25, khu phố 5, phường Long Bình, thành phố Biên Hoà, tỉnh Đồng Nai (nay là khu phố 31, phường Long Bình, tỉnh Đồng Nai)."}],"businessOperationDetails":[{"note":null,"paid":0,"rest":300000,"type":"tra_tien","attrs":{"currency":"VND"},"issue":null,"money":300000,"exempt":null,"period":"thongbaoquyetdinhtha","reason":null,"reduce":null,"status":"dangthihanh","addition":null,"assetType":null,"description":"tạm ứng án phí đã nộp","obligorName":{"html":"Tạ Hùng","base64":null},"postponedTo":null,"businessType":"financial","personalInfos":null,"postponedFrom":null,"processingType":null}]},{"enforcement":{"attrs":{"sobanan":"31/QĐST-DS","qd1loai":"Dân sự","ngaybanan":"2025-07-08T17:00:00Z","toaan":"Thi hành án dân sự thành phố Hồ Chí Minh"},"decisionId":"000061DzI1WDDSxDGxXyyO","decisionNumber":"25328/QĐ-THADS","requestDate":"2025-12-11T11:01:46Z","type":"is_proactive","contentRequirements":{"base64":null,"html":"Hoàn lại cho Ngân hàng TMCP Đầu tư và Phát Triển Việt Nam (BIDV) số tiền tạm ứng án phí 19.477.000 đồng (Mười chín triệu bốn trăm bảy mươi bảy nghìn đồng) do Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV) đã nộp theo biên lai thu tiền số 0063948 ngày 19/3/2025 của Chi cục Thi hành án dân sự huyện Củ Chi, Thành phố Hồ Chí Minh (sau sáp nhập là Thi hành án dân sự Thành phố Hồ Chí Minh)."},"propertyInfo":{"base64":null,"html":null},"requester":null,"requesterId":null,"requesterAddress":null,"enforcementAgency":"Thi hành án dân sự thành phố Hồ Chí Minh","status":"dangthihanh","period":"thongbaoquyetdinhtha","action":"RA_QUYET_DINH","assigneeName":"diempth.hcm@moj.gov.vn","assignee":"test_candv.hcm@moj.gov.vn","preAssignee":null,"ticketId":"000065yI4gq1Hgepgz4aJ","envelopeId":null,"judgmentInfo":{"base64":null,"html":"Căn cứ Quyết định công nhận sự thỏa thuận của các đương sự số 31/2025/QĐST-DS ngày 09 tháng 7 năm 2025 của Tòa án nhân dân Khu vực 8 - Thành phố Hồ Chí Minh; Căn cứ Thông báo sửa chữa bổ sung quyết định số 34/2025/TB-TA ngày 03 tháng 9 năm 2025 của Tòa án nhân dân Khu vực 8 - Thành phố Hồ Chí Minh."},"obligorName":{"base64":null,"html":"Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV), địa chỉ: Tháp BIDV, Số 194 Trần Quang Khải, phường Lý Thái Tổ, quận Hoàn Kiếm, thành phố Hà Nội (nay là phường Hoàn Kiếm, thành phố Hà Nội). Địa chỉ liên lạc: Số 216-218, Tỉnh lộ 8, xã Tân An Hội (thị trấn Củ Chi, huyện Củ Chi cũ), Thành phố Hồ Chí Minh)."},"lookup":null,"receivedDate":"2025-12-05T16:35:33Z","signedDate":"2025-12-08T06:38:00Z","totalMoney":19477000,"totalReceived":0,"remainingAmount":19477000},"enforcementDocumentRequests":[{"enforcementDocument":{"resourceType":"attatch","number":"25328/QĐ-THADS","name":"QĐ THADS 31/QĐST-DS Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)","releaseDate":"2025-12-08T06:38:00Z","submissionDate":"2025-12-05T16:35:33Z","page":null,"businessType":"attach","documentType":"qdtha","status":"approved","resourceSystem":"eQD","butLuc":"1","deletionFlag":false},"objectStorages":[{"resourceId":"judgment_decision_000061DzI1WDDSxDGxXyyO","fileName":"QĐ THADS 31/QĐST-DS Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)","typeLocation":null,"code":null,"beanName":"s3ClientSecond","bucketName":"prod-2025-envelope-second","keyName":"12/completed//storage-01/5682/0000617XOHr1MivexW9J1zH9k9r.pdf","documentType":"envelope","resourceType":"DOCUMENT_TYPE_QDTHA","contentType":"application/pdf","documentSize":1760032,"resourceSystem":"envelope","description":null,"envelopeId":"00006049iNglSd2gE8mRQf3a3N"}]}],"enforcementParties":[{"name":"Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)","type":"O","attrs":{"dob":null,"ma_xa":null,"ma_tinh":null,"quoc_tich":null,"represent":null,"chuc_danh_dai_dien":null},"email":null,"gender":null,"birthDay":null,"subjects":"ndtha","description":null,"phoneNumber":null,"deletionFlag":false,"identification":null,"permanentAddress":"Tháp BIDV, Số 194 Trần Quang Khải, phường Lý Thái Tổ, quận Hoàn Kiếm, thành phố Hà Nội (nay là phường Hoàn Kiếm, thành phố Hà Nội)","temporaryAddress":"Số 216-218, Tỉnh lộ 8, xã Tân An Hội (thị trấn Củ Chi, huyện Củ Chi cũ), Thành phố Hồ Chí Minh"}],"businessOperationDetails":[{"note":null,"paid":0,"rest":19477000,"type":"tra_tien","attrs":{"currency":"VND"},"issue":null,"money":19477000,"exempt":null,"period":"thongbaoquyetdinhtha","reason":null,"reduce":null,"status":"dangthihanh","addition":null,"assetType":null,"description":"số tiền tạm ứng án phí","obligorName":{"html":"Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)","base64":null},"postponedTo":null,"businessType":"financial","personalInfos":null,"postponedFrom":null,"processingType":null}]},{"enforcement":{"attrs":{"sobanan":"21/2025/QĐST-DS","qd1loai":"Dân sự","ngaybanan":"2025-11-04T17:00:00Z","toaan":"Thi hành án dân sự thành phố Đà Nẵng"},"decisionId":"000061OWIqlnQsJpKEEgRx","decisionNumber":"5576/QĐ-THADS","requestDate":"2025-12-09T07:58:49Z","type":"is_proactive","contentRequirements":{"base64":null,"html":"Sung ngân sách nhà nước số tiền tạm ứng lệ phí ông Hốih Thông đã nộp là 300.000 (ba trăm nghìn đồng) theo Biên lai thu tiền thuế, phí, lệ phí Tòa án số 0003194 ngày 17 tháng 10 năm 2025 của Thi hành án dân sự thành phố Đà Nẵng."},"propertyInfo":{"base64":null,"html":null},"requester":null,"requesterId":null,"requesterAddress":null,"enforcementAgency":"Thi hành án dân sự thành phố Đà Nẵng","status":"dangthihanh","period":"thongbaoquyetdinhtha","action":"RA_QUYET_DINH","assigneeName":"thuyvtt.qnm@moj.gov.vn","assignee":"test_candv.hcm@moj.gov.vn","preAssignee":null,"ticketId":"00006yMIDOKdt5EneeOPJ","envelopeId":null,"judgmentInfo":{"base64":null,"html":"Căn cứ Quyết định số 21/2025/QĐST-DS ngày 05 tháng 11 năm 2025 của Tòa án nhân dân Khu vực 12 - Đà Nẵng."},"obligorName":{"base64":null,"html":"Hốih Thông, sinh năm 1996, địa chỉ: Thôn Aró, xã Tây Giang, thành phố Đà Nẵng."},"lookup":null,"receivedDate":"2025-12-09T07:58:38Z","signedDate":"2025-12-11T02:03:53Z","totalMoney":300000,"totalReceived":0,"remainingAmount":300000},"enforcementDocumentRequests":[{"enforcementDocument":{"resourceType":"attatch","number":"5576/QĐ-THADS","name":"QĐ THADS 21/2025/QĐST-DS Ông Hốih Thông","releaseDate":"2025-12-11T02:03:53Z","submissionDate":"2025-12-09T07:58:38Z","page":null,"businessType":"attach","documentType":"qdtha","status":"approved","resourceSystem":"eQD","butLuc":"1","deletionFlag":false},"objectStorages":[{"resourceId":"judgment_decision_000061OWIqlnQsJpKEEgRx","fileName":"QĐ THADS 21/2025/QĐST-DS Ông Hốih Thông","typeLocation":null,"code":null,"beanName":"s3ClientSecond","bucketName":"prod-2025-envelope-second","keyName":"12/completed//storage-01/5682/000061RmIL0EC1gKm6DLmCGBPK.pdf","documentType":"envelope","resourceType":"DOCUMENT_TYPE_QDTHA","contentType":"application/pdf","documentSize":1738720,"resourceSystem":"envelope","description":null,"envelopeId":"0000688kCVbEh1XLx0xqpSw0AV"}]}],"enforcementParties":[{"name":"Hốih Thông","type":"P","attrs":{"dob":null,"ma_xa":null,"ma_tinh":null,"quoc_tich":null,"represent":null,"chuc_danh_dai_dien":null},"email":null,"gender":null,"birthDay":"1996","subjects":"nptha","description":null,"phoneNumber":null,"deletionFlag":false,"identification":null,"permanentAddress":"Thôn Aró, xã Tây Giang, thành phố Đà Nẵng","temporaryAddress":"Thôn Aró, xã Tây Giang, thành phố Đà Nẵng"}],"businessOperationDetails":[{"note":null,"paid":0,"rest":300000,"type":"tich_thu_tien","attrs":{"currency":"VND"},"issue":null,"money":300000,"exempt":null,"period":"thongbaoquyetdinhtha","reason":null,"reduce":null,"status":"dangthihanh","addition":null,"assetType":null,"description":"số tiền tạm ứng lệ phí","obligorName":{"html":"Hốih Thông","base64":null},"postponedTo":null,"businessType":"financial","personalInfos":null,"postponedFrom":null,"processingType":null}]}];
+
+    // ========== TAB SWITCHING ==========
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    // ========== UTILITY FUNCTIONS ==========
+    async function fetchWithRetry(url, options, retries = 2, delay = 500) {
+      for (let i = 0; i <= retries; i++) {
+        try {
+          const res = await fetch(url, options);
+          if (res.ok) return res;
+        } catch (err) {
+          console.warn(`Lỗi lần ${i + 1}:`, err.message);
+        }
+        if (i < retries) {
+          await new Promise(r => setTimeout(r, delay));
+        }
+      }
+      throw new Error(`Gọi API thất bại sau ${retries + 1} lần`);
+    }
+
+    // ========== TAB 1: CREATE/DELETE FUNCTIONS (FROM ORIGINAL CODE) ==========
+    async function doLogin() {
+      const env = document.getElementById("env").value;
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const resultBox = document.getElementById("result");
+
+      if (!username || !password) {
+        resultBox.textContent = " Vui lòng nhập username và password";
+        return;
+      }
+
+      const url = `${loginBaseMap[env]}/auth/login`;
+      const payload = {
+        username, password, rememberMe: true, signinType: null, otp: null,
+        contactTrace: '{"ip":null,"location":null,"deviceName":null,"deviceId":null,"timeTrace":null,"type":null,"latLong":null,"browser":"Chrome","osVersion":"Windows"}'
+      };
+
+      resultBox.textContent = `Đang login... POST ${url}\n\n`;
+
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        const tokenKeys = ["access_token", "id_token", "token", "accessToken"];
+        for (const k of tokenKeys) {
+          if (data[k]) {
+            document.getElementById("token").value = data[k];
+            resultBox.textContent += `\n Lấy token từ "${k}".\n`;
+            return;
+          }
+        }
+        resultBox.textContent += " Không tìm thấy token.\n";
+      } catch (err) {
+        resultBox.textContent += "\n Lỗi: " + err.message + "\n";
+      }
+    }
+
+    async function getIds() {
+      const emails = document.getElementById("emails").value.split("\n").map(e => e.trim()).filter(e => e);
+      const env = document.getElementById("env").value;
+      const token = document.getElementById("token").value.trim();
+      const baseUrl = domainMap[env];
+      const tbody = document.querySelector("#dataTable tbody");
+      tbody.innerHTML = "";
+
+      if (!token) {
+        alert(" Cần token!");
+        return;
+      }
+
+      for (const email of emails) {
+        const url = `${baseUrl}/uaa/api/users/login?login=${encodeURIComponent(email)}`;
+        try {
+          const res = await fetchWithRetry(url, {
+            headers: { "Content-Type": "application/json", "Cookie": `access_token=${token}` }
+          }, 3, 500);
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.id) {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td><input type="text" value="${data.id}"></td>
+                <td><input type="text" value="${email}"></td>
+                <td><button class="btn btn-text" onclick="removeRow(this)">Xóa</button></td>
+              `;
+              tbody.appendChild(row);
+            }
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+
+    function addRow() {
+      const tbody = document.querySelector("#dataTable tbody");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input type="text" placeholder="ID"></td>
+        <td><input type="text" placeholder="Email" onkeydown="handleEmailEnter(event, this)"></td>
+        <td><button class="btn btn-text" onclick="removeRow(this)">Xóa</button></td>
+      `;
+      tbody.appendChild(row);
+    }
+
+    function removeRow(btn) {
+      btn.closest("tr").remove();
+    }
+
+    async function handleEmailEnter(event, inputEl) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        const email = inputEl.value.trim();
+        const row = inputEl.closest("tr");
+        const idInput = row.cells[0].querySelector("input");
+        const token = document.getElementById("token").value.trim();
+        const baseUrl = domainMap[document.getElementById("env").value];
+
+        if (!email || !token) {
+          alert(" Cần Email và Token!");
+          return;
+        }
+
+        const url = `${baseUrl}/uaa/api/users/login?login=${encodeURIComponent(email)}`;
+        try {
+          const res = await fetch(url, {
+            headers: { "Content-Type": "application/json", "Cookie": `access_token=${token}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.id) idInput.value = data.id;
+          }
+        } catch (err) {
+          console.error(err);
+        }
+        addRow();
+      }
+    }
+
+    async function callApi() {
+      const env = document.getElementById("env").value;
+      const token = document.getElementById("token").value.trim();
+      const resultBox = document.getElementById("result");
+
+      if (!token) {
+        resultBox.textContent = " Vui lòng nhập Token!";
+        return;
+      }
+
+      const selectedDashboards = Array.from(document.querySelectorAll('.preset-checkbox:checked')).map(cb => cb.value);
+      if (selectedDashboards.length === 0) {
+        resultBox.textContent = " Vui lòng chọn dashboard!";
+        return;
+      }
+
+      const rows = document.querySelectorAll("#dataTable tbody tr");
+      const users = [];
+      rows.forEach(row => {
+        const id = row.cells[0].querySelector("input").value.trim();
+        const email = row.cells[1].querySelector("input").value.trim();
+        if (id && email) users.push({ id: parseInt(id), email });
+      });
+
+      if (users.length === 0) {
+        resultBox.textContent = " Chưa có dữ liệu!";
+        return;
+      }
+
+      const baseUrl = domainMap[env];
+      const totalCalls = selectedDashboards.length * users.length;
+      let successCount = 0, errorCount = 0;
+
+      resultBox.textContent = `Bắt đầu tạo ${selectedDashboards.length} dashboard cho ${users.length} users...\nTổng: ${totalCalls} API calls\n\n`;
+
+      for (const dashboardId of selectedDashboards) {
+        for (const user of users) {
+          const url = `${baseUrl}/workspace/api/dashboards/create?dashboardId=${encodeURIComponent(dashboardId)}&t=${Date.now()}`;
+          try {
+            const res = await fetch(url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+              body: JSON.stringify([user])
+            });
+            if (res.ok) {
+              successCount++;
+              resultBox.textContent += `✓ ${dashboardId} → ${user.email}\n`;
+            } else {
+              errorCount++;
+              resultBox.textContent += `✗ ${dashboardId} → ${user.email}\n`;
+            }
+          } catch (err) {
+            errorCount++;
+            resultBox.textContent += `✗ ${dashboardId} → ${user.email}: ${err.message}\n`;
+          }
+          resultBox.scrollTop = resultBox.scrollHeight;
+          await new Promise(r => setTimeout(r, 150));
+        }
+      }
+      resultBox.textContent += `\n=== HOÀN THÀNH ===\nThành công: ${successCount}/${totalCalls}\nLỗi: ${errorCount}/${totalCalls}`;
+    }
+
+    async function deleteApi() {
+      const env = document.getElementById("env").value;
+      const token = document.getElementById("token").value.trim();
+      const resultBox = document.getElementById("result");
+
+      if (!token) {
+        resultBox.textContent = " Vui lòng nhập Token!";
+        return;
+      }
+
+      const rows = document.querySelectorAll("#dataTable tbody tr");
+      const payload = [];
+      rows.forEach(row => {
+        const id = row.cells[0].querySelector("input").value.trim();
+        const email = row.cells[1].querySelector("input").value.trim();
+        if (id && email) payload.push({ id: parseInt(id), email });
+      });
+
+      if (payload.length === 0) {
+        resultBox.textContent = " Chưa có dữ liệu!";
+        return;
+      }
+
+      const baseUrl = domainMap[env];
+      const url = `${baseUrl}/workspace/api/dashboards/delete?t=${Date.now()}`;
+      resultBox.textContent = " Đang xóa...";
+      
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+        const text = await res.text();
+        resultBox.textContent = `Status: ${res.status}\n\n${text}`;
+      } catch (err) {
+        resultBox.textContent = " Lỗi: " + err.message;
+      }
+    }
+
+    // ========== TAB 2: CHECK DASHBOARD - LOGIN AS EACH USER TO GET THEIR DASHBOARDS ==========
+    async function checkDashboards() {
+      const emails = document.getElementById("checkEmails").value.split("\n").map(e => e.trim()).filter(e => e);
+      const env = document.getElementById("env").value;
+      const adminToken = document.getElementById("token").value.trim();
+      const baseUrl = domainMap[env];
+      const loginBase = loginBaseMap[env];
+      const logBox = document.getElementById("checkLog");
+      
+      if (!adminToken) {
+        alert(" Cần token admin từ Tab 1!");
+        return;
+      }
+
+      if (emails.length === 0) {
+        alert(" Vui lòng nhập danh sách email!");
+        return;
+      }
+      // Ask for a common password for all users
+      const commonPassword = "thads@2025"
+      logBox.textContent = " Bắt đầu kiểm tra...\n\n";
+      
+      let totalUsers = 0;
+      let completeUsers = 0;
+      let partialUsers = 0;
+      let missingUsers = 0;
+      
+      const results = [];
+
+      for (const email of emails) {
+        logBox.textContent += `Checking ${email}...\n`;
+        
+        // Step 1: Get user ID using admin token
+        const userUrl = `${baseUrl}/uaa/api/users/login?login=${encodeURIComponent(email)}`;
+        let userId;
+        
+        try {
+          const userRes = await fetch(userUrl, {
+            headers: { 
+              "Content-Type": "application/json", 
+              "Cookie": `access_token=${adminToken}` 
+            }
+          });
+          
+          if (!userRes.ok) {
+            logBox.textContent += `   Không tìm thấy user\n\n`;
+            continue;
+          }
+
+          const userData = await userRes.json();
+          userId = userData.id;
+          totalUsers++;
+          logBox.textContent += `  User ID: ${userId}\n`;
+        } catch (err) {
+          logBox.textContent += `   Lỗi lấy user ID: ${err.message}\n\n`;
+          continue;
+        }
+
+        // Step 2: Login as this user to get their token
+        logBox.textContent += `  Đang login vào tài khoản user...\n`;
+        
+        try {
+          const loginUrl = `${loginBase}/auth/login`;
+          const loginPayload = {
+            username: email,
+            password: commonPassword,
+            rememberMe: true,
+            signinType: null,
+            otp: null,
+            contactTrace: '{"ip":null,"location":null,"deviceName":null,"deviceId":null,"timeTrace":null,"type":null,"latLong":null,"browser":"Chrome","osVersion":"Windows"}'
+          };
+
+          const loginRes = await fetch(loginUrl, {
+            method: "POST",
+            headers: { 
+              "Accept": "application/json", 
+              "Content-Type": "application/json" 
+            },
+            body: JSON.stringify(loginPayload)
+          });
+
+          if (!loginRes.ok) {
+            logBox.textContent += `   Login thất bại (sai mật khẩu?)\n\n`;
+            continue;
+          }
+
+          const loginData = await loginRes.json();
+          const userToken = loginData.access_token || loginData.id_token || loginData.token || loginData.accessToken;
+          
+          if (!userToken) {
+            logBox.textContent += `   Không lấy được token từ login\n\n`;
+            continue;
+          }
+
+          logBox.textContent += `  ✓ Login thành công\n`;
+
+          // Step 3: Get dashboards using user's own token
+          logBox.textContent += `  Đang lấy dashboard...\n`;
+          
+          const dashUrl = `${baseUrl}/workspace/api/dashboards?t=${Date.now()}`;
+          const dashRes = await fetch(dashUrl, {
+            headers: { 
+              "Content-Type": "application/json", 
+              "Authorization": `Bearer ${userToken}`
+            }
+          });
+
+          const foundDashboards = [];
+          
+          if (dashRes.ok) {
+            const userDashboards = await dashRes.json();
+            
+            logBox.textContent += `  Nhận được ${Array.isArray(userDashboards) ? userDashboards.length : 0} dashboards\n`;
+            
+            if (Array.isArray(userDashboards)) {
+              for (const dash of userDashboards) {
+                // Check BOTH id and oldDashboardId
+                const dashId = dash.oldDashboardId || dash.id;
+                
+                if (dashId && DASHBOARD_IDS.includes(dashId) && !foundDashboards.includes(dashId)) {
+                  foundDashboards.push(dashId);
+                }
+              }
+            }
+          } else {
+            logBox.textContent += `   API trả về status ${dashRes.status}\n`;
+          }
+
+          logBox.textContent += `  ✓ Tìm thấy ${foundDashboards.length}/${DASHBOARD_IDS.length} dashboards\n`;
+          
+          const missingDashboards = DASHBOARD_IDS.filter(id => !foundDashboards.includes(id));
+          
+          let status;
+          if (foundDashboards.length === 0) {
+            status = "missing";
+            missingUsers++;
+          } else if (foundDashboards.length === DASHBOARD_IDS.length) {
+            status = "complete";
+            completeUsers++;
+          } else {
+            status = "partial";
+            partialUsers++;
+          }
+
+          results.push({
+            email,
+            userId,
+            status,
+            foundDashboards,
+            missingDashboards
+          });
+
+        } catch (err) {
+          logBox.textContent += `   Lỗi: ${err.message}\n`;
+        }
+
+        logBox.textContent += `\n`;
+        logBox.scrollTop = logBox.scrollHeight;
+        await new Promise(r => setTimeout(r, 300));
+      }
+
+      // Update stats
+      document.getElementById("totalUsers").textContent = totalUsers;
+      document.getElementById("completeUsers").textContent = completeUsers;
+      document.getElementById("partialUsers").textContent = partialUsers;
+      document.getElementById("missingUsers").textContent = missingUsers;
+      document.getElementById("statsSection").style.display = "block";
+
+      // Store results globally for modal
+      checkResultsData.complete = results.filter(r => r.status === 'complete').map(r => r.email);
+      checkResultsData.partial = results.filter(r => r.status === 'partial').map(r => r.email);
+      checkResultsData.missing = results.filter(r => r.status === 'missing').map(r => r.email);
+
+      // Update results table
+      const tbody = document.getElementById("checkResultsBody");
+      tbody.innerHTML = "";
+      
+      results.forEach(result => {
+        const row = document.createElement("tr");
+        
+        let statusBadge;
+        if (result.status === "complete") {
+          statusBadge = '<span class="status-badge status-success">✓ Đầy đủ (9/9)</span>';
+        } else if (result.status === "partial") {
+          statusBadge = `<span class="status-badge status-warning">⚠ Thiếu (${result.foundDashboards.length}/9)</span>`;
+        } else {
+          statusBadge = '<span class="status-badge status-error">✗ Chưa có (0/9)</span>';
+        }
+
+        let dashboardList = '<div class="dashboard-list">';
+        DASHBOARD_IDS.forEach(id => {
+          const name = dashboardNames[id];
+          const hasIt = result.foundDashboards.includes(id);
+          dashboardList += `<div class="dashboard-item ${hasIt ? 'present' : 'missing'}">${hasIt ? '✓' : '✗'} ${name}</div>`;
+        });
+        dashboardList += '</div>';
+
+        row.innerHTML = `
+          <td>${result.email}</td>
+          <td>${result.userId}</td>
+          <td>${statusBadge}</td>
+          <td>${dashboardList}</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById("checkResultsSection").style.display = "block";
+      logBox.textContent += "\n Hoàn thành kiểm tra!\n";
+    }
+
+    // ========== TAB 3: PUSH DATA FUNCTIONS ==========
+    function loadSampleData() {
+      document.getElementById("pushData").value = JSON.stringify(SAMPLE_ENFORCEMENT_DATA, null, 2);
+    }
+    
+    function copyTokenFromTab1() {
+  const token = document.getElementById("token").value.trim();
+  
+  if (token) {
+    document.getElementById("pushToken").value = token;
+    // Thêm hiệu ứng đổi màu nhẹ để người dùng biết đã copy thành công (tùy chọn)
+    const target = document.getElementById("pushToken");
+    target.style.backgroundColor = "#e8f0fe";
+    setTimeout(() => target.style.backgroundColor = "", 500);
+  }
+}
+    async function startPushData() {
+      pushStopFlag = false;
+      
+      const apiUrl = document.getElementById("pushApiUrl").value.trim();
+      const token = document.getElementById("pushToken").value.trim();
+      const emailsText = document.getElementById("pushEmails").value.trim();
+      const dataText = document.getElementById("pushData").value.trim();
+      const logBox = document.getElementById("pushLog");
+
+      if (!apiUrl) {
+        alert(" Vui lòng nhập API URL!");
+        return;
+      }
+      if (!token) {
+        alert(" Vui lòng nhập Bearer Token!");
+        return;
+      }
+      if (!emailsText) {
+        alert(" Vui lòng nhập danh sách email!");
+        return;
+      }
+      if (!dataText) {
+        alert(" Vui lòng nhập dữ liệu hồ sơ!");
+        return;
+      }
+
+      const emails = emailsText.split("\n").map(e => e.trim()).filter(e => e);
+      let hsData;
+      try {
+        hsData = JSON.parse(dataText);
+        if (!Array.isArray(hsData)) {
+          throw new Error("Dữ liệu phải là mảng JSON");
+        }
+      } catch (err) {
+        alert(" Lỗi parse JSON: " + err.message);
+        return;
+      }
+
+      const totalRequests = emails.length * hsData.length;
+      let successCount = 0;
+      let failedCount = 0;
+      let processedCount = 0;
+
+      document.getElementById("pushTotal").textContent = totalRequests;
+      document.getElementById("pushSuccess").textContent = "0";
+      document.getElementById("pushFailed").textContent = "0";
+      document.getElementById("pushProgress").textContent = "0%";
+
+      logBox.textContent = `🚀 Bắt đầu đẩy dữ liệu:\n`;
+      logBox.textContent += `    ${emails.length} emails\n`;
+      logBox.textContent += `    ${hsData.length} hồ sơ\n`;
+      logBox.textContent += `    Tổng: ${totalRequests} requests\n\n`;
+
+      for (let i = 0; i < emails.length; i++) {
+        if (pushStopFlag) {
+          logBox.textContent += `\n⏹ ĐÃ DỪNG!\n`;
+          break;
+        }
+
+        const email = emails[i];
+        logBox.textContent += `--- [${i + 1}/${emails.length}] Email: ${email} ---\n`;
+
+        for (let j = 0; j < hsData.length; j++) {
+          if (pushStopFlag) break;
+
+          const record = JSON.parse(JSON.stringify(hsData[j]));
+          
+          if (record.enforcement) {
+            record.enforcement.assignee = email;
+          } else {
+            logBox.textContent += `    Hồ sơ ${j + 1}: Thiếu trường enforcement!\n`;
+            failedCount++;
+            processedCount++;
+            updatePushStats(totalRequests, successCount, failedCount, processedCount);
+            continue;
+          }
+
+          try {
+            const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              },
+              body: JSON.stringify(record)
+            });
+
+            if (response.ok) {
+              successCount++;
+              logBox.textContent += `    Hồ sơ ${j + 1}: Thành công (${response.status})\n`;
+            } else {
+              failedCount++;
+              const errorText = await response.text().catch(() => "Unknown error");
+              logBox.textContent += `    Hồ sơ ${j + 1}: Thất bại (${response.status}) - ${errorText.substring(0, 100)}\n`;
+            }
+          } catch (err) {
+            failedCount++;
+            logBox.textContent += `    Hồ sơ ${j + 1}: Lỗi - ${err.message}\n`;
+          }
+
+          processedCount++;
+          updatePushStats(totalRequests, successCount, failedCount, processedCount);
+          
+          logBox.scrollTop = logBox.scrollHeight;
+          await new Promise(r => setTimeout(r, 100));
+        }
+
+        logBox.textContent += `\n`;
+      }
+
+      logBox.textContent += `\nHOÀN TẤT!\n`;
+      logBox.textContent += `    Thành công: ${successCount}/${totalRequests}\n`;
+      logBox.textContent += `    Thất bại: ${failedCount}/${totalRequests}\n`;
+    }
+
+    function stopPushData() {
+      pushStopFlag = true;
+      document.getElementById("pushLog").textContent += `\n⏹ Đang dừng lại...\n`;
+    }
+
+    function updatePushStats(total, success, failed, processed) {
+      document.getElementById("pushSuccess").textContent = success;
+      document.getElementById("pushFailed").textContent = failed;
+      const progress = Math.round((processed / total) * 100);
+      document.getElementById("pushProgress").textContent = progress + "%";
+    }
+
+    // ========== INITIALIZATION ==========
+    window.addEventListener('DOMContentLoaded', function() {
+      loadSampleData();
+      document.querySelector("#dataTable tbody tr td:nth-child(2) input")
+        .addEventListener("keydown", function (e) { handleEmailEnter(e, this); });
+    });
+  </script>
+</body>
+
+</html>
