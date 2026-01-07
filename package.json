@@ -2,6 +2,7 @@
   "name": "App-data-test",
   "version": "1.0.0",
   "main": "main.js",
+  "author": "libra-an",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
@@ -16,10 +17,17 @@
   },
   "build": {
     "appId": "com.checktaikhoan.app",
-    "productName": "Check Tai Khoan",
+    "productName": "App",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "libra-an",
+        "repo": "datatest"
+      }
+    ],
     "win": {
-      "target": ["nsis"]
-
+      "target": ["nsis"],
+      "publish": ["github"]
     },
     "nsis": {
       "oneClick": false,
