@@ -2023,7 +2023,7 @@ const sendRequest = async (payload, email, index) => {
 // Hàm chạy chính
 const runBatchJob = async () => {
   console.log(
-    `🚀 Bắt đầu xử lý: ${emails.length} emails x ${hs.length} hồ sơ = ${
+    `Bắt đầu xử lý: ${emails.length} emails x ${hs.length} hồ sơ = ${
       emails.length * hs.length
     } requests\n`
   );

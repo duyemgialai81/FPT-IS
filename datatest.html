@@ -651,6 +651,27 @@
               <span class="preset-id">00006lKI663u08na2OVa</span>
             </span>
           </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006nPIRbvJfbWQJgQNB" checked>
+            <span class="preset-content">
+              <span class="preset-text">TRƯỞNG/ PHÓ TRƯỞNG THI HÀNH ÁN_eQĐTHA</span>
+              <span class="preset-id">00006nPIRbvJfbWQJgQNB</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006MgIJDplUlqWVRz0B" checked>
+            <span class="preset-content">
+              <span class="preset-text">CHẤP HÀNH VIÊN_eQĐTHA</span>
+              <span class="preset-id">00006MgIJDplUlqWVRz0B</span>
+            </span>
+          </label>
+          <label class="preset-item">
+            <input type="checkbox" class="preset-checkbox" value="00006pyIpmlWFEOmW3Pqv" checked>
+            <span class="preset-content">
+              <span class="preset-text">CHÁNH VP/ TRƯỞNG KV_eQĐTHA</span>
+              <span class="preset-id">00006pyIpmlWFEOmW3Pqv</span>
+            </span>
+          </label>
         </div>
       </div>
 
@@ -865,7 +886,10 @@ test_user@example.com"></textarea>
       "00006BXIkLoigM4523Wq",
       "00006N1IK56uNoy40lnw",
       "00006owIP6pAHollW1xKR",
-      "00006lKI663u08na2OVa"
+      "00006lKI663u08na2OVa",
+      "00006nPIRbvJfbWQJgQNB",// Mới
+      "00006MgIJDplUlqWVRz0B", // Mới
+      "00006pyIpmlWFEOmW3Pqv"
     ];
 
     const dashboardNames = {
@@ -877,12 +901,13 @@ test_user@example.com"></textarea>
       "00006BXIkLoigM4523Wq": "Tác nghiệp chưa hoàn thành",
       "00006N1IK56uNoy40lnw": "Tác nghiệp đã hoàn thành",
       "00006owIP6pAHollW1xKR": "Hồ sơ đang thi hành",
-      "00006lKI663u08na2OVa": "HDSD"
+      "00006lKI663u08na2OVa": "HDSD",
+      "00006nPIRbvJfbWQJgQNB":"TRƯỞNG/ PHÓ TRƯỞNG THI HÀNH ÁN_eQĐTHA",
+      "00006MgIJDplUlqWVRz0B":"CHẤP HÀNH VIÊN_eQĐTHA",
+      "00006pyIpmlWFEOmW3Pqv":"CHÁNH VP/ TRƯỞNG KV_eQĐTHA"
     };
 
     let pushStopFlag = false;
-
-    // Store check results globally for modal
     let checkResultsData = {
       complete: [],
       partial: [],
