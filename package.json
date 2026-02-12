@@ -1,6 +1,6 @@
 {
-  "name": "CheckTaiKhoan",
-  "version": "1.0.0", 
+  "name": "FPT-IS",
+  "version": "1.0.0",
   "author": "Don Jade Roy",
   "main": "main.js",
   "scripts": {
@@ -8,8 +8,8 @@
     "build": "electron-builder"
   },
   "build": {
-    "appId": "com.donjaderoy.checktaikhoan",
-    "productName": "Check Tai Khoan",
+    "appId": "com.donjaderoy.fptis",
+    "productName": "FPT-IS",
     "publish": [
       {
         "provider": "github",
@@ -18,7 +18,16 @@
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "uninstallDisplayName": "FPT-IS",
+      "createDesktopShortcut": true
     }
   },
   "dependencies": {
